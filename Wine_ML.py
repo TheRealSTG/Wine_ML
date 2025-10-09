@@ -12,3 +12,14 @@ import seaborn as sns
 # Import supplementary visualization code visuals.py 
 import visuals as vs
 
+# Load the red wines dataset
+data = pd.read_csv("data/winequality-red.csv", sep= ';')
+
+# Displaying the first five records
+display(data.head(n = 5))
+
+# Check if any columns have missing information
+data.isnull().any()
+
+# To Get more information on the dataset
+data.info()

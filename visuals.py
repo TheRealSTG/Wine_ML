@@ -6,7 +6,9 @@ warnings.filterwarnings("ignore", category = UserWarning, module = "matplotlib")
 #
 # Display inline matplotlib plots with IPython
 from IPython import get_ipython
-get_ipython().run_line_magic('matplotlib', 'inline')
+# Only run IPython magic if we're in an IPython environment
+if get_ipython() is not None:
+    get_ipython().run_line_magic('matplotlib', 'inline')
 ###########################################
 import matplotlib
 import matplotlib.pyplot as plt
