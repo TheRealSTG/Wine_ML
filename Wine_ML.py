@@ -56,3 +56,25 @@ print("Percentage of wines with quality 7 and above: {:.2f}%".format(percentage_
 display(np.round(data.describe()))
 # Visualised features of the original data
 vs.distribution(data, "quality")
+
+# Scatter plot to get details about the feature set in the data.
+pd.plotting.scatter_matrix(data, alpha = 0.3, figsize = (40,40), diagonal = 'kde')
+
+# A heatmap of co-relations between the features
+correlation = data.corr()
+plt.figure(figsize=(14, 12))
+heatmap = sns.heatmap(correlation, annot=True, linewidths=0, vmin= -1, cmap= "RdBu_r")
+
+# pH vs Fixed Acidity
+
+# Create a new datafram containing only pH and fixed acidity columns to visualize their co-relations
+fixedAcidity_pH = data[['pH', 'fixed acidity']]
+
+#Initialize a joint-grid with the datafram, using seaborn library
+gridA = sns.JointGrid(x="fixed acidity", y="pH", data=fixedAcidity_pH, size = 6)
+
+# Draw a regression plot in the grid
+gridA - gridA.plot_joint(sns.regplot, scatter_kws={"s":10})
+
+# Draws a distribution plot in the same grid
+gridA = gridA.plot_marginals(sns.displot)

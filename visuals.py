@@ -39,7 +39,7 @@ def distribution(data, feature_label, transformed = False):
         ax.set_xlabel(feature_label)
         ax.set_ylabel("Total Number")
         ax.set_ylim((0, 1500))
-        ax.set_yticks([0, 200, 400, 600, 800])
+        ax.set_yticks([0, 200, 400, 600, 800, 1000])
         ax.set_yticklabels([0, 200, 400, 600, 800, ">1000"])
 
     # Plot aesthetics
