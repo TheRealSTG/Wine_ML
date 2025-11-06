@@ -12,6 +12,9 @@ import seaborn as sns
 # Import supplementary visualization code visuals.py 
 import visuals as vs
 
+# Import train_test_splits
+from sklearn.model_selection import train_test_split
+
 # Load the red wines dataset
 data = pd.read_csv("data/winequality-red.csv", sep= ';')
 
@@ -170,3 +173,36 @@ for feature in data.keys():
 outliers_to_remove = list(set(outliers_to_remove))
 good_data = data.drop(outliers_to_remove).reset_index(drop = True)
 print(f"\nRemoved {len(outliers_to_remove)} outlier rows. New dataset shape : {good_data.shape}")
+
+## Data Preparation
+# The Regression problem is converted into a classification problem, by applying transformations.
+# Then the data will be used to create a feature-set and target labels.
+
+# Defining the splits for categories.
+# 1-4 will be poor quality
+# 5-6 will be average
+# 7-10 will be great
+bins = [1, 4, 6, 10]
+
+# 0 for low quality
+# 1 for average
+# 3 for great quality
+quality_labels = [ 0, 1, 2]
+data['quality_catergorical'] = pd.cut(data['quality'], bins = bins, labels = quality_labels, include_lowest = True)
+
+# Display the first two columns
+display(data.head(n = 2))
+
+# Split the data into features and target label
+quality_raw = data['quality_catergorical']
+features_raw = data.drop(['quality', 'quality_catergorical'], axis = 1)
+
+# Split the features and the income data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(features_raw,
+                                                    quality_raw,
+                                                    test_size = 0.2,
+                                                    random_state = 0)
+
+# Show the results of the split
+print("Training set has {} samples.".format(X_train.shape[0]))
+print("Testing set has {} samples.".format(X_test.shape[0]))
