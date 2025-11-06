@@ -149,3 +149,24 @@ That is the middle fifty percent of the data and it contains the bulk of the dat
 Any data point that lies beyond one point five times the IQR would be considered as an outlier.
 '''
 
+outliers_to_remove = []
+# For each feature, find the data points with the extreme high or low values
+for feature in data.keys():
+    # Calculate the Q1 percentage
+    Q1 = np.percentile(data[feature], q = 25)
+    # Calculate the Q3 percentage
+    Q3 = np.percentile(data[feature], q = 75)
+    # Using interquartile range to calculate the outliers
+    interquartile_range = Q3 - Q1
+    step = 1.5 * interquartile_range
+    # Display the outliers
+    print("Data points that are consdiered outliers for the feature '{}':".format(feature))
+    feature_outliers = data[~((data[feature] >= Q1 - step) & (data[feature] <= Q3 + step))]
+    display(feature_outliers)
+    # Add the features that are to be removed into the list
+    outliers_to_remove.extend(feature_outliers.index.tolist())
+
+# Remove Duplicates and the outliers
+outliers_to_remove = list(set(outliers_to_remove))
+good_data = data.drop(outliers_to_remove).reset_index(drop = True)
+print(f"\nRemoved {len(outliers_to_remove)} outlier rows. New dataset shape : {good_data.shape}")
