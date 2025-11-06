@@ -65,16 +65,87 @@ correlation = data.corr()
 plt.figure(figsize=(14, 12))
 heatmap = sns.heatmap(correlation, annot=True, linewidths=0, vmin= -1, cmap= "RdBu_r")
 
-# pH vs Fixed Acidity
-
-# Create a new datafram containing only pH and fixed acidity columns to visualize their co-relations
+## pH vs Fixed Acidity
+# Create a new dataframe containing only pH and fixed acidity columns to visualize their co-relations
 fixedAcidity_pH = data[['pH', 'fixed acidity']]
-
-#Initialize a joint-grid with the datafram, using seaborn library
-gridA = sns.JointGrid(x="fixed acidity", y="pH", data=fixedAcidity_pH, size = 6)
-
+# Initialize a joint-grid with the dataframe, using seaborn library
+gridA = sns.JointGrid(x="fixed acidity", y="pH", data=fixedAcidity_pH, height=6)
 # Draw a regression plot in the grid
-gridA - gridA.plot_joint(sns.regplot, scatter_kws={"s":10})
-
+gridA = gridA.plot_joint(sns.regplot, scatter_kws={"s":10})
 # Draws a distribution plot in the same grid
-gridA = gridA.plot_marginals(sns.displot)
+gridA = gridA.plot_marginals(sns.histplot)
+#as fixed acidity levels increase, the pH levels drop.
+
+## Fixed Acidity vs Citric Acid
+# A new dataframe that contains only citric acid and fixed acidity columns to visualize their co-relations
+fixedAcidity_citricAcid = data[['citric acid', 'fixed acidity']]
+# Initialise a joint-grid with the dataframe,using the seaborn library
+g = sns.JointGrid(x = "fixed acidity", y = "citric acid", data = fixedAcidity_citricAcid, height=6)
+# Draw a regression plot in the grid
+g = g.plot_joint(sns.regplot, scatter_kws = {"s":10})
+# Draw a distribution plot in the same grid
+g = g.plot_marginals(sns.histplot)
+
+
+## Density vs Fixed Acidity
+# A new dataframe that contains only Density and Fixed Acidity columns to visualize their co-relations
+fixedAcidity_Density = data[['density', 'fixed acidity']]
+# Initialise a joint-grid with the dataframe,using the seaborn library
+g = sns.JointGrid(x = "fixed acidity", y = "density", data = fixedAcidity_Density, height=6)
+# Draw a regression plot in the grid
+g = g.plot_joint(sns.regplot, scatter_kws = {"s":10})
+# Draw a distribution plot in the same grid
+g = g.plot_marginals(sns.histplot)
+
+## Volatile Acidity vs Quality
+# A new dataframe that contains only Volatile Acidity and quality columns to visualize their co-relations
+VolatileAcidity_Quality = data[['quality', 'volatile acidity']]
+# Initialise a joint-grid with the dataframe,using the seaborn library
+g = sns.JointGrid(x = "volatile acidity", y = "quality", data = VolatileAcidity_Quality, height=6)
+# Draw a regression plot in the grid
+g = g.plot_joint(sns.regplot, scatter_kws = {"s":10})
+# Draw a distribution plot in the same grid
+g = g.plot_marginals(sns.histplot)
+
+## Using a bar plot to show relationships between discrete values
+## Volatile Acidity vs Quality
+fig, axs = plt.subplots(ncols = 1, figsize=(10,6))
+sns.barplot(x = 'quality', y = 'volatile acidity', data = VolatileAcidity_Quality, ax = axs)
+
+plt.tight_layout()
+plt.show()
+plt.gcf().clear()
+
+## Alcohol vs Quality
+# A new dataframe that contains only Alcohol and quality columns to visualize their co-relations
+Alcohol_Quality = data[['quality', 'alcohol']]
+# Initialise a joint-grid with the dataframe,using the seaborn library
+g = sns.JointGrid(x="alcohol", y="quality", data = VolatileAcidity_Quality, height=6)
+# Draw a regression plot in the grid
+g = g.plot_joint(sns.regplot, scatter_kws = {"s":10})
+# Draw a distribution plot in the same grid
+g = g.plot_marginals(sns.histplot)
+
+# Using a bar plot to show relationships between discrete values
+fig, axs = plt.subplots(ncols = 1, figsize = (10,6))
+sns.barplot(x = 'quality', y = 'alcohol', data = Alcohol_Quality, ax = axs)
+plt.title('Quality vs Alcohol')
+
+plt.tight_layout()
+plt.show()
+plt.gcf().clear()
+
+## Outlier Detection
+
+''' Tukey's Method for Detecting Outliers
+
+First the sorted data is divided into four intervals.
+This is done in a way that each interval would contain about twenty five percent of the total data points.
+The value at which these intervals are split are called Quartiles.
+
+Then you subtract the third Quartile from the first Quartile to get the Interquartile Range (IQR).
+That is the middle fifty percent of the data and it contains the bulk of the data.
+
+Any data point that lies beyond one point five times the IQR would be considered as an outlier.
+'''
+
