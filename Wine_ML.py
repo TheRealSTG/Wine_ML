@@ -321,3 +321,24 @@ for clf in [clf_A, clf_B, clf_C, clf_D]:
 # Run Metrics Visualisation for the four models chosen.
 vs.visualize_classification_performance(results)
 
+# Feature Importance
+
+## Figuring out which features provide the most predictive power.
+
+### Our intention here is to find out the relationships between only a few crucial features and the target label to simplify our understanding of the phenomenon.
+### Thus, all we want to do is identify a small number of features that most strongly predit the quality of wines.
+
+# Import a supervised learning model that has 'feature_importances_'
+model = RandomForestClassifier(max_depth = None, random_state = None)
+
+# Train the supervised model on the training set using .fit(X_train, y_train)
+model = model.fit(X_train, y_train)
+
+# Extract the feature importances using .feature_importances_
+importances = model.feature_importances_
+
+print(X_train.columns)
+print(importances)
+
+# Visualisation
+vs.feature_plot(importances, X_train, y_train)
