@@ -25,6 +25,10 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
+# Import GridSearchCV, make_scorer 
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import make_scorer
+
 # Load the red wines dataset
 data = pd.read_csv("data/winequality-red.csv", sep= ';')
 
@@ -39,7 +43,7 @@ data.info()
 
 # Preliminary analysis 
 # Seven or above rating is very good quality
-# FIve or six to have average quality
+# Five or six to have average quality
 # Less than five qualtiy to be poor
 
 n_wines = data.shape[0]
@@ -342,3 +346,57 @@ print(importances)
 
 # Visualisation
 vs.feature_plot(importances, X_train, y_train)
+
+# Hyperparameter tuning using GridSearchCV
+
+# initlialise the classifier
+clf = RandomForestClassifier(max_depth = None, random_state = None)
+
+'''
+n_estimators
+    Number of Trees in the Forest
+max_features
+    The number of features to consider when looking for the best split
+max_depth
+    The maximum depth of the tree
+'''
+parameters = {'n_estimators': [10,20,30], 'max_features': [3,4,5, None], 'max_depth': [5,6,7, None]}
+
+# F-Beta score
+scorer = make_scorer(fbeta_score, beta = 0.5, average = "micro")
+
+# Perform grid search on the classifier using 'scorer' as the scoring method using GridSearchCV()
+grid_obj = GridSearchCV(clf, parameters, scoring = scorer)
+
+# Fill the grid search object to the training data and find the optimal parameters using fit()
+grid_fit = grid_obj.fit(X_train, y_train)
+
+# Get the estimator
+best_clf = grid_fit.best_estimator_
+
+# Make predictions using the unoptimised model
+predictions = (clf.fit(X_train, y_train)).predict(X_test)
+best_predictions = best_clf.predict(X_test)
+
+# Report the before and after scores
+print("Unoptimized model\n------")
+print("Accuracy score on testing data: {:.4f}".format(accuracy_score(y_test, predictions)))
+print("F-score on testing data: {:.4f}".format(fbeta_score(y_test, predictions, beta = 0.5, average="micro")))
+print("\nOptimized Model\n------")
+print(best_clf)
+print("\nFinal accuracy score on the testing data: {:.4f}".format(accuracy_score(y_test, best_predictions)))
+print("Final F-score on the testing data: {:.4f}".format(fbeta_score(y_test, best_predictions, beta = 0.5,  average="micro")))
+
+
+## Final Model testing
+"""Give inputs in this order: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide,
+total sulfur dioxide, density, pH, sulphates, alcohol
+
+"""
+wine_data = [[8, 0.2, 0.16, 1.8, 0.065, 3, 16, 0.9962, 3.42, 0.92, 9.5],
+            [8, 0, 0.16, 1.8, 0.065, 3, 16, 0.9962, 3.42, 0.92, 1 ],
+            [7.4, 2, 0.00, 1.9, 0.076, 11.0, 34.0, 0.9978, 3.51, 0.56, 0.6]]
+               
+# Show predictions
+for i, quality in enumerate(best_clf.predict(wine_data)):
+    print("Predicted quality for Wine {} is: {}".format(i+1, quality))
