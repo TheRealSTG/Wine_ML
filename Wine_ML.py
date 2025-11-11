@@ -19,6 +19,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import fbeta_score
 from sklearn.metrics import accuracy_score
 
+# Import three supervised learning classification models from sklearn
+from sklearn.naive_bayes import GaussianNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+
 # Load the red wines dataset
 data = pd.read_csv("data/winequality-red.csv", sep= ';')
 
@@ -127,7 +133,7 @@ plt.gcf().clear()
 # A new dataframe that contains only Alcohol and quality columns to visualize their co-relations
 Alcohol_Quality = data[['quality', 'alcohol']]
 # Initialise a joint-grid with the dataframe,using the seaborn library
-g = sns.JointGrid(x="alcohol", y="quality", data = VolatileAcidity_Quality, height=6)
+g = sns.JointGrid(x="alcohol", y="quality", data=Alcohol_Quality, height=6)
 # Draw a regression plot in the grid
 g = g.plot_joint(sns.regplot, scatter_kws = {"s":10})
 # Draw a distribution plot in the same grid
@@ -243,8 +249,75 @@ def train_predict_evaluate(learner, sample_size, X_train, y_train, X_test, y_tes
     # End time of farming
     end = time()
 
+    # Calculate the total training time
+    results['train_time'] = end - start
+    '''
+        Get the predictions on the first three hundred training samples (X_train), and also the predictions on the test set(X_test) using .predict()
+    '''
+    # Start time
+    start = time()
+    predictions_train = learner.predict(X_train[:300])
+    predictions_test = learner.predict(X_test)
+    # End time   
+    end = time()
+
     # Calculate the total prediction time
     results['pred_time'] = end - start
 
-    # Compute the accuracy on the first three hundred training samples which is y_train[:300]
-    results['acc_time'] = accuracy_score(y_train[:300], prediction_train)
+    # Compute accuracy on the first three hundred samples which is y_train[:300]
+    results['acc_train'] = accuracy_score(y_train[:300], predictions_train)
+
+    # Compare accuracy on test set using accuracy_score()
+    results['acc_test'] = accuracy_score(y_test, predictions_test)
+
+    # Compute F1-Score on the first three hundret training samples using fbeta_score()
+    results['f_train'] = fbeta_score(y_train[:300], predictions_train, beta = 0.5, average = 'micro')
+
+    # Compute F1-Score on the test set which is y_test
+    results['f_test'] = fbeta_score(y_test, predictions_test, beta = 0.5, average = 'micro')
+
+    print("{} trained on {} samples.".format(learner.__class__.__name__, sample_size))
+
+    return results
+
+
+
+'''
+Three supervised learning models are imported.
+Gaussian Naive Bayes, Decision Tree and Random Forest Classifier
+One Logistic Regression model is imported too.
+Then the number of samples for 1%, 10%, and 100% of the training data are calculated and stored.
+
+Then the results on the learners are stored.
+'''
+
+# Initialise the four models
+clf_A = GaussianNB()
+clf_B = DecisionTreeClassifier(max_depth = None, random_state = None)
+clf_C = RandomForestClassifier(max_depth = None, random_state = None)
+clf_D = LogisticRegression()
+
+# Calculate the number of samples for 1%, 10% and 100% of the training data
+
+## 100% Sample
+samples_100 = len(y_train)
+
+## 10% Sample
+samples_10 = int(len(y_train) * 10/100)
+
+## 1% Sample
+samples_1 = int(len(y_train) * 1/100)
+
+# Collect the results on the learners
+results = {}
+for clf in [clf_A, clf_B, clf_C, clf_D]:
+    clf_name = clf.__class__.__name__
+    results[clf_name] = {}
+    for i, samples in enumerate([samples_1, samples_10, samples_100]):
+        results[clf_name][i] = \
+        train_predict_evaluate(clf, samples, X_train, y_train, X_test, y_test)
+
+
+# Run Metrics Visualisation for the four models chosen.
+vs.visualize_classification_performance(results)
+

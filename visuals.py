@@ -62,66 +62,71 @@ def visualize_classification_performance(results):
       - results: a list of dictionaries of the statistic results from 'train_predict_evaluate()'
     """
   
-    # Create figure
+    # Create figure with better sizing
     sns.set()
     sns.set_style("whitegrid")
-    fig, ax = plt.subplots(2, 3, figsize = (11,7))
-    # print("VERSION:")
-    # print(matplotlib.__version__)
-    # Constants
-    bar_width = 0.3
-    colors = ["#e55547", "#4e6e8e", "#2ecc71"]
+    sns.set_context("notebook", font_scale=1.1)
+    fig, ax = plt.subplots(2, 3, figsize=(18, 11))
+    
+    # Constants - improved colors and bar width
+    bar_width = 0.18
+    colors = ["#e74c3c", "#3498db", "#2ecc71", "#f39c12"]
     
     # Super loop to plot four panels of data
     for k, learner in enumerate(results.keys()):
         for j, metric in enumerate(['train_time', 'acc_train', 'f_train', 'pred_time', 'acc_test', 'f_test']):
             for i in np.arange(3):
                 
-                # Creative plot code
-                ax[j//3, j%3].bar(i+k*bar_width, results[learner][i][metric], width = bar_width, color = colors[k])
-                ax[j//3, j%3].set_xticks([0.45, 1.45, 2.45])
-                ax[j//3, j%3].set_xticklabels(["1%", "10%", "100%"])
-                ax[j//3, j%3].set_xlabel("Training Set Size")
+                # Creative plot code with edge color for better visibility
+                ax[j//3, j%3].bar(i+k*bar_width, results[learner][i][metric], 
+                                 width=bar_width, color=colors[k], 
+                                 edgecolor='black', linewidth=0.7, alpha=0.85)
+                ax[j//3, j%3].set_xticks([0.27, 1.27, 2.27])
+                ax[j//3, j%3].set_xticklabels(["1%", "10%", "100%"], fontsize=11, fontweight='bold')
+                ax[j//3, j%3].set_xlabel("Training Set Size", fontsize=12, fontweight='bold')
                 ax[j//3, j%3].set_xlim((-0.1, 3.0))
+                ax[j//3, j%3].grid(axis='y', alpha=0.3, linestyle='--')
     
-    # Add unique y-labels
-    ax[0, 0].set_ylabel("Time (in seconds)")
-    ax[0, 1].set_ylabel("Accuracy Score")
-    ax[0, 2].set_ylabel("F-score")
-    ax[1, 0].set_ylabel("Time (in seconds)")
-    ax[1, 1].set_ylabel("Accuracy Score")
-    ax[1, 2].set_ylabel("F-score")
+    # Add unique y-labels with better formatting
+    ax[0, 0].set_ylabel("Time (seconds)", fontsize=12, fontweight='bold')
+    ax[0, 1].set_ylabel("Accuracy Score", fontsize=12, fontweight='bold')
+    ax[0, 2].set_ylabel("F-score", fontsize=12, fontweight='bold')
+    ax[1, 0].set_ylabel("Time (seconds)", fontsize=12, fontweight='bold')
+    ax[1, 1].set_ylabel("Accuracy Score", fontsize=12, fontweight='bold')
+    ax[1, 2].set_ylabel("F-score", fontsize=12, fontweight='bold')
     
-    # Add titles
-    ax[0, 0].set_title("Model Training")
-    ax[0, 1].set_title("Accuracy Score on Training Subset")
-    ax[0, 2].set_title("F-score on Training Subset")
-    ax[1, 0].set_title("Model Predicting")
-    ax[1, 1].set_title("Accuracy Score on Testing Set")
-    ax[1, 2].set_title("F-score on Testing Set")
+    # Add titles with better styling
+    ax[0, 0].set_title("Model Training Time", fontsize=13, fontweight='bold', pad=10)
+    ax[0, 1].set_title("Training Accuracy", fontsize=13, fontweight='bold', pad=10)
+    ax[0, 2].set_title("Training F-score", fontsize=13, fontweight='bold', pad=10)
+    ax[1, 0].set_title("Model Prediction Time", fontsize=13, fontweight='bold', pad=10)
+    ax[1, 1].set_title("Testing Accuracy", fontsize=13, fontweight='bold', pad=10)
+    ax[1, 2].set_title("Testing F-score", fontsize=13, fontweight='bold', pad=10)
     
-    # Add horizontal lines for naive predictors
-    ax[0, 1].axhline(y = 1, xmin = -0.1, xmax = 3.0, linewidth = 1, color = 'k', linestyle = 'dashed')
-    ax[1, 1].axhline(y = 1, xmin = -0.1, xmax = 3.0, linewidth = 1, color = 'k', linestyle = 'dashed')
-    ax[0, 2].axhline(y = 1, xmin = -0.1, xmax = 3.0, linewidth = 1, color = 'k', linestyle = 'dashed')
-    ax[1, 2].axhline(y = 1, xmin = -0.1, xmax = 3.0, linewidth = 1, color = 'k', linestyle = 'dashed')
+    # Add horizontal reference lines
+    ax[0, 1].axhline(y=0.5, xmin=-0.1, xmax=3.0, linewidth=1.5, color='gray', linestyle='--', alpha=0.5)
+    ax[1, 1].axhline(y=0.5, xmin=-0.1, xmax=3.0, linewidth=1.5, color='gray', linestyle='--', alpha=0.5)
+    ax[0, 2].axhline(y=0.5, xmin=-0.1, xmax=3.0, linewidth=1.5, color='gray', linestyle='--', alpha=0.5)
+    ax[1, 2].axhline(y=0.5, xmin=-0.1, xmax=3.0, linewidth=1.5, color='gray', linestyle='--', alpha=0.5)
     
     # Set y-limits for score panels
-    ax[0, 1].set_ylim((0, 1))
-    ax[0, 2].set_ylim((0, 1))
-    ax[1, 1].set_ylim((0, 1))
-    ax[1, 2].set_ylim((0, 1))
+    ax[0, 1].set_ylim((0, 1.05))
+    ax[0, 2].set_ylim((0, 1.05))
+    ax[1, 1].set_ylim((0, 1.05))
+    ax[1, 2].set_ylim((0, 1.05))
 
-    # Create patches for the legend
+    # Create patches for the legend with better positioning
     patches = []
     for i, learner in enumerate(results.keys()):
-        patches.append(mpatches.Patch(color = colors[i], label = learner))
-    plt.legend(handles = patches, bbox_to_anchor = (-.80, 2.53), \
-               loc = 'upper center', borderaxespad = 0., ncol = 3, fontsize = 'x-large')
+        patches.append(mpatches.Patch(color=colors[i], label=learner, edgecolor='black', linewidth=0.5))
+    plt.legend(handles=patches, bbox_to_anchor=(0.5, 2.65), 
+               loc='upper center', borderaxespad=0., ncol=4, 
+               fontsize=12, frameon=True, shadow=True, fancybox=True)
     
-    # Aesthetics
-    plt.suptitle("Performance Metrics for Three Supervised Learning Models", fontsize = 16, y = 1.10)
-    plt.tight_layout(pad=1, w_pad=2, h_pad=5.0)
+    # Aesthetics with updated title
+    plt.suptitle("Performance Metrics for Four Supervised Learning Models", 
+                 fontsize=18, fontweight='bold', y=0.995)
+    plt.tight_layout(pad=2, w_pad=3, h_pad=4.0)
     plt.show()
     
 
