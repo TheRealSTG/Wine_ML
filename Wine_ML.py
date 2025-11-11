@@ -15,6 +15,10 @@ import visuals as vs
 # Import train_test_splits
 from sklearn.model_selection import train_test_split
 
+# Import classification metrics from sklearn, fbeta_score and accuracy_score
+from sklearn.metrics import fbeta_score
+from sklearn.metrics import accuracy_score
+
 # Load the red wines dataset
 data = pd.read_csv("data/winequality-red.csv", sep= ';')
 
@@ -206,3 +210,41 @@ X_train, X_test, y_train, y_test = train_test_split(features_raw,
 # Show the results of the split
 print("Training set has {} samples.".format(X_train.shape[0]))
 print("Testing set has {} samples.".format(X_test.shape[0]))
+
+
+def train_predict_evaluate(learner, sample_size, X_train, y_train, X_test, y_test):
+    '''
+    Inputs provided:
+
+        learner :
+            the learning algorithm to be trained and predicted on
+        sample_size:
+            the size of samples (number) to be drawn from the training set
+        X_train:
+            features training set
+        y_train:
+            quality training set
+        X_test:
+            fetures testing set
+        y_test:
+            quality testing set
+    '''
+
+    results = {}
+
+    '''
+    Train the learner to the training data using slicing with 'sample_size'
+    using the .fit(training_features[:], training_labels[:])
+    '''
+    # Start time of training
+    start = time()
+    # Model gets trained here
+    learner = learner.fit(X_train[:sample_size], y_train[:sample_size])
+    # End time of farming
+    end = time()
+
+    # Calculate the total prediction time
+    results['pred_time'] = end - start
+
+    # Compute the accuracy on the first three hundred training samples which is y_train[:300]
+    results['acc_time'] = accuracy_score(y_train[:300], prediction_train)
