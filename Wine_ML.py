@@ -400,3 +400,18 @@ wine_data = [[8, 0.2, 0.16, 1.8, 0.065, 3, 16, 0.9962, 3.42, 0.92, 9.5],
 # Show predictions
 for i, quality in enumerate(best_clf.predict(wine_data)):
     print("Predicted quality for Wine {} is: {}".format(i+1, quality))
+
+# White Wine Metrics and Comparison 
+white_data = pd.read_csv("data/winequality-white.csv", sep=';')
+print("\nWhite Wine Data Overview:")
+print(white_data.describe())
+
+# Compare mean and std of quality
+print("\nRed Wine Quality: mean={:.2f}, std={:.2f}".format(data['quality'].mean(), data['quality'].std()))
+print("White Wine Quality: mean={:.2f}, std={:.2f}".format(white_data['quality'].mean(), white_data['quality'].std()))
+
+# Comparison of  class distributions
+print("\nRed Wine Quality Value Counts:")
+print(data['quality'].value_counts().sort_index())
+print("\nWhite Wine Quality Value Counts:")
+print(white_data['quality'].value_counts().sort_index())
