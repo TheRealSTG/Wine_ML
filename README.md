@@ -1,12 +1,31 @@
-This project aims to use Machine Learning and data science in order to understand what makes wine taste the way it tastes.
+---
+title: WineScore
+emoji: 🍷
+colorFrom: red
+colorTo: purple
+sdk: streamlit
+sdk_version: 1.35.0
+app_file: app.py
+pinned: false
+license: mit
+---
 
-The intention to create this project is to gain knowledge and practical experience in the field of Data Science.
+# 🍷 WineScore — Wine Quality Predictor
 
-The aim is to extract and interpolate data from the .csv files and get insights into what makes a specific wine taste the way it does.
-Then use that extraplated information to train a Machine Learning model that would detect what makes a wine tastes "good".
+Predict the quality of a wine from its chemical properties using a GridSearchCV-tuned Random Forest model trained on the UCI Vinho Verde dataset.
 
+## Features
+- **Live quality prediction** (Poor / Average / Great) with confidence scores
+- **SHAP explainability** — see exactly which chemical properties drove the prediction
+- **Chemical profile radar** — visual overview of the wine's signature
+- **Improvement suggestions** — which properties to adjust and in which direction
 
+## Dataset
+UCI Machine Learning Repository — [Wine Quality Data Set](https://archive.ics.uci.edu/ml/datasets/wine+quality)  
+1,599 red wines + 4,898 white wines from Vinho Verde, Portugal.
 
-The dataset I've used is the University of California Irvine's Machine Learning Repository.
-This dataset has two sets of wine data, one for red wine and one for white wine.
-The wines used int his data set were produced at Vinho Verde,, a region in the north of Portugal.
+## Model
+- Algorithm: `RandomForestClassifier` wrapped in a `sklearn.Pipeline` with `StandardScaler`
+- Tuning: 5-fold `GridSearchCV` on n_estimators, max_depth, max_features
+- Target: 3-class quality label (Poor: 1–4, Average: 5–6, Great: 7–10)
+- Explainability: `shap.TreeExplainer`

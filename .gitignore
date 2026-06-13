@@ -1,1 +1,31 @@
-__pycache__/visuals.cpython-312.pyc
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Model (large binary — use Git LFS or exclude and document separately)
+# Uncomment the line below if pipeline.pkl > 100MB
+# model/pipeline.pkl
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter / old files
+*.ipynb
+visuals.py
+Wine_ML.py
+Wine_ML_regression.py
+*copy*.py
+*copy*.txt
+*copy*.md
